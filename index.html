@@ -5,13 +5,51 @@
 
   <script>
     /* =====================================================================
-       CONFIGURE AQUI
-       Cole entre as aspas o link de convite do seu Discord e salve.
-       Exemplo:  var LINK_DISCORD = "https://discord.gg/abc123";
-       Com o link colado, o botão do Discord fica ativo sozinho.
-       Deixando vazio (""), ele aparece como "Em breve".
+       CONFIGURE AQUI. É o único lugar que você precisa editar.
+
+       - Para tirar um botão: apague o link e deixe "" (vazio). O botão some.
+         Vale para Twitch, Kick, Instagram e TikTok.
+       - YouTube e Discord são FIXOS: o botão sempre aparece.
+         Com o link vazio, ele mostra "Em breve".
+         Colando o link, ele fica ativo sozinho.
+       - Pode colar o link completo (https://...) ou sem o https://.
+
+       Exemplo:   discord: "https://discord.gg/abc123",
        ===================================================================== */
-    var LINK_DISCORD = "";
+    var LINKS = {
+      twitch:    "https://www.twitch.tv/henrizeu",
+      youtube:   "https://www.youtube.com/@henrizeu",
+      kick:      "https://kick.com/henrizeu",
+      instagram: "https://www.instagram.com/henrizeu/",
+      tiktok:    "https://www.tiktok.com/@henrizeu_",
+      discord:   ""
+    };
+
+    /* =====================================================================
+       BOTÕES NOVOS
+       Para criar um botão, adicione uma linha dentro dos colchetes abaixo,
+       no formato:
+           { nome: "Nome do botão", link: "https://...", texto: "frase pequena", cor: "#FF8A00" },
+
+       - nome  : obrigatório. É o título do botão.
+       - link  : obrigatório. Sem link, o botão não aparece.
+       - texto : opcional. A frase pequena embaixo do nome.
+                 Sem ela, aparece o endereço do link.
+       - cor   : opcional. Cor do quadradinho, em hexadecimal (ex.: "#FF8A00").
+                 Sem ela, fica amarelo.
+       Não esqueça a vírgula no fim de cada linha.
+       Os botões novos aparecem depois do TikTok, antes do Discord.
+       Para tirar um botão novo, apague a linha dele.
+
+       Exemplos abaixo: para ativar, apague a linha de abertura e a de
+       fechamento do comentário que está em volta deles.
+       ===================================================================== */
+    var EXTRAS = [
+      /*
+      { nome: "Loja",    link: "https://minhaloja.com", texto: "Camisetas e mais", cor: "#FF8A00" },
+      { nome: "Meu Pix", link: "https://pix.exemplo.com/henrizeu" },
+      */
+    ];
   </script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -358,20 +396,22 @@
   <canvas id="raios" aria-hidden="true"></canvas>
 
   <main class="page">
-    <img class="logo" src="logo.png" width="132" height="132" alt="Logo do Henrizeu: a letra H com um raio" title="Toque para soltar um raio">
+    <img class="logo" src="assets/logo.png" width="132" height="132" alt="Logo do Henrizeu: a letra H com um raio" title="Toque para soltar um raio">
 
     <h1>Henri<span class="zeu">zeu</span></h1>
     <p class="tagline"><span>Links</span></p>
 
     <!--
       COMO EDITAR
-      - Discord: cole o link lá em cima, em LINK_DISCORD. Nada mais a fazer.
-      - Para trocar um endereço, mude o href do botão.
-      - Para esconder um botão, apague o bloco <li> dele.
+      Não precisa mexer aqui. Edite só o bloco LINKS, no topo do arquivo:
+      - Trocar um link: mude o endereço lá.
+      - Tirar um botão (Twitch, Kick, Instagram, TikTok): deixe o link vazio "".
+      - YouTube e Discord ficam sempre; vazios, mostram "Em breve".
+      - Botão novo: adicione uma linha na lista EXTRAS (também no topo).
     -->
     <ul class="links">
       <li style="--i:0">
-        <a class="btn primary twitch" href="https://www.twitch.tv/henrizeu" target="_blank" rel="noopener noreferrer">
+        <a class="btn primary twitch" data-rede="twitch" href="https://www.twitch.tv/henrizeu" target="_blank" rel="noopener noreferrer">
           <span class="chip" aria-hidden="true">TW</span>
           <span class="text">
             <span class="name">Twitch</span>
@@ -382,7 +422,7 @@
       </li>
 
       <li style="--i:1">
-        <a class="btn youtube" href="https://www.youtube.com/@henrizeu" target="_blank" rel="noopener noreferrer">
+        <a class="btn youtube" data-rede="youtube" href="https://www.youtube.com/@henrizeu" target="_blank" rel="noopener noreferrer">
           <span class="chip" aria-hidden="true">YT</span>
           <span class="text">
             <span class="name">YouTube</span>
@@ -393,7 +433,7 @@
       </li>
 
       <li style="--i:2">
-        <a class="btn kick" href="https://kick.com/henrizeu" target="_blank" rel="noopener noreferrer">
+        <a class="btn kick" data-rede="kick" href="https://kick.com/henrizeu" target="_blank" rel="noopener noreferrer">
           <span class="chip" aria-hidden="true">KK</span>
           <span class="text">
             <span class="name">Kick</span>
@@ -404,7 +444,7 @@
       </li>
 
       <li style="--i:3">
-        <a class="btn instagram" href="https://www.instagram.com/henrizeu/" target="_blank" rel="noopener noreferrer">
+        <a class="btn instagram" data-rede="instagram" href="https://www.instagram.com/henrizeu/" target="_blank" rel="noopener noreferrer">
           <span class="chip" aria-hidden="true">IG</span>
           <span class="text">
             <span class="name">Instagram</span>
@@ -416,7 +456,7 @@
 
       <!-- Atenção: no TikTok o usuário é henrizeu_ (com underline no final) -->
       <li style="--i:4">
-        <a class="btn tiktok" href="https://www.tiktok.com/@henrizeu_" target="_blank" rel="noopener noreferrer">
+        <a class="btn tiktok" data-rede="tiktok" href="https://www.tiktok.com/@henrizeu_" target="_blank" rel="noopener noreferrer">
           <span class="chip" aria-hidden="true">TT</span>
           <span class="text">
             <span class="name">TikTok</span>
@@ -426,9 +466,9 @@
         </a>
       </li>
 
-      <!-- Discord: fica "Em breve" até você colar o link em LINK_DISCORD (no topo do arquivo). -->
+      <!-- Discord: fica "Em breve" até você colar o link em LINKS (no topo do arquivo). -->
       <li style="--i:5">
-        <a class="btn discord is-soon" id="btn-discord" href="#" aria-disabled="true" tabindex="-1">
+        <a class="btn discord is-soon" data-rede="discord" href="#" aria-disabled="true" tabindex="-1">
           <span class="chip" aria-hidden="true">DC</span>
           <span class="text">
             <span class="name">Discord</span>
@@ -446,21 +486,147 @@
     /* Ano do rodapé */
     document.getElementById('ano').textContent = new Date().getFullYear();
 
-    /* Discord: ativa o botão quando LINK_DISCORD tem um link */
+    /* Links: lê o LINKS do topo do arquivo.
+       Link vazio = o botão some. Só YouTube e Discord ficam sempre (como "Em breve"). */
     (function () {
-      var btn = document.getElementById('btn-discord');
-      var link = (typeof LINK_DISCORD === 'string' ? LINK_DISCORD : '').trim();
-      if (!btn || !link) return;
-      if (!/^https?:\/\//i.test(link)) link = 'https://' + link;
-      try { link = new URL(link).href; } catch (e) { return; }
-      btn.href = link;
-      btn.target = '_blank';
-      btn.rel = 'noopener noreferrer';
-      btn.classList.remove('is-soon');
-      btn.removeAttribute('aria-disabled');
-      btn.removeAttribute('tabindex');
-      var tag = btn.querySelector('.soon-tag');
-      if (tag) tag.outerHTML = '<span class="arrow" aria-hidden="true">&rarr;</span>';
+      if (typeof LINKS !== 'object' || !LINKS) return;
+      var FIXOS = { youtube: true, discord: true };
+
+      function normalizar(v) {
+        v = (typeof v === 'string' ? v : '').trim();
+        if (!v) return '';
+        if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+        try { return new URL(v).href; } catch (e) { return ''; }
+      }
+
+      /* texto pequeno embaixo do nome, tirado do próprio link */
+      function rotulo(rede, href) {
+        try {
+          var u = new URL(href);
+          var seg = u.pathname.replace(/^\/+|\/+$/g, '').split('/')[0] || '';
+          var host = u.hostname.replace(/^www\./, '');
+          if (rede === 'instagram') return seg ? '@' + seg.replace(/^@/, '') : host;
+          if ((rede === 'tiktok' || rede === 'youtube') && seg.charAt(0) === '@') return seg;
+          return host + (seg ? '/' + seg : '');
+        } catch (e) { return ''; }
+      }
+
+      function trocarFim(a, html) {
+        var fim = a.querySelector('.arrow, .soon-tag');
+        if (fim) fim.outerHTML = html;
+      }
+
+      function ativar(a, rede, href) {
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.classList.remove('is-soon');
+        a.removeAttribute('aria-disabled');
+        a.removeAttribute('tabindex');
+        trocarFim(a, '<span class="arrow" aria-hidden="true">&rarr;</span>');
+        if (rede !== 'discord') {
+          var h = a.querySelector('.handle');
+          var r = rotulo(rede, href);
+          if (h && r) h.textContent = r;
+        }
+      }
+
+      function desativar(a) {
+        a.setAttribute('href', '#');
+        a.removeAttribute('target');
+        a.classList.add('is-soon');
+        a.setAttribute('aria-disabled', 'true');
+        a.setAttribute('tabindex', '-1');
+        trocarFim(a, '<span class="soon-tag">Em breve</span>');
+      }
+
+      var botoes = document.querySelectorAll('.links a[data-rede]');
+      for (var i = 0; i < botoes.length; i++) {
+        var a = botoes[i];
+        var rede = a.getAttribute('data-rede');
+        var href = normalizar(LINKS[rede]);
+        if (href) ativar(a, rede, href);
+        else if (FIXOS[rede]) desativar(a);
+        else a.parentNode.parentNode.removeChild(a.parentNode);
+      }
+
+      /* botões novos (lista EXTRAS), antes do Discord */
+      function iniciais(nome) {
+        var letras = Array.from(nome.replace(/\s+/g, ' ').trim());
+        var palavras = nome.trim().split(/\s+/);
+        var sigla = palavras.length > 1
+          ? Array.from(palavras[0])[0] + Array.from(palavras[1])[0]
+          : letras.slice(0, 2).join('');
+        return sigla.toUpperCase();
+      }
+
+      function textoSobre(hex) {
+        var h = hex.replace('#', '');
+        if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+        var r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+        return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#0B1B3A' : '#FFFFFF';
+      }
+
+      if (typeof EXTRAS !== 'undefined' && Array.isArray(EXTRAS)) {
+        var lista = document.querySelector('.links');
+        var discordBtn = document.querySelector('.links a[data-rede="discord"]');
+        var antes = discordBtn ? discordBtn.parentNode : null;
+        for (var k = 0; k < EXTRAS.length; k++) {
+          var ex = EXTRAS[k] || {};
+          var nome = String(ex.nome || '').trim();
+          var url = normalizar(ex.link);
+          if (!nome || !url) continue;
+
+          var cor = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(ex.cor || '').trim()) ? String(ex.cor).trim() : '';
+
+          var li = document.createElement('li');
+          var link = document.createElement('a');
+          link.className = 'btn extra';
+          link.href = url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.style.setProperty('--accent', cor || '#FFC400');
+          link.style.setProperty('--on-accent', cor ? textoSobre(cor) : '#0B1B3A');
+
+          var chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.setAttribute('aria-hidden', 'true');
+          chip.textContent = iniciais(nome);
+
+          var bloco = document.createElement('span');
+          bloco.className = 'text';
+          var n = document.createElement('span');
+          n.className = 'name';
+          n.textContent = nome;
+          var hd = document.createElement('span');
+          hd.className = 'handle';
+          hd.textContent = String(ex.texto || '').trim() || rotulo('extra', url);
+          bloco.appendChild(n);
+          bloco.appendChild(hd);
+
+          var seta = document.createElement('span');
+          seta.className = 'arrow';
+          seta.setAttribute('aria-hidden', 'true');
+          seta.innerHTML = '&rarr;';
+
+          link.appendChild(chip);
+          link.appendChild(bloco);
+          link.appendChild(seta);
+          li.appendChild(link);
+          lista.insertBefore(li, antes);
+        }
+      }
+
+      /* refaz a ordem da animação de entrada e destaca o primeiro botão ativo */
+      var itens = document.querySelectorAll('.links li');
+      var primeiro = null;
+      for (var j = 0; j < itens.length; j++) {
+        itens[j].style.setProperty('--i', j);
+        var b = itens[j].querySelector('a');
+        if (b) b.classList.remove('primary');
+        if (!primeiro && b && !b.classList.contains('is-soon')) primeiro = b;
+      }
+      if (primeiro) primeiro.classList.add('primary');
     })();
 
     /* Janelas acesas nos prédios */
