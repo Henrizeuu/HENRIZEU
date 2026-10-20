@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+
+  <script>
+    /* =====================================================================
+       CONFIGURE AQUI
+       Cole entre as aspas o link de convite do seu Discord e salve.
+       Exemplo:  var LINK_DISCORD = "https://discord.gg/abc123";
+       Com o link colado, o botão do Discord fica ativo sozinho.
+       Deixando vazio (""), ele aparece como "Em breve".
+       ===================================================================== */
+    var LINK_DISCORD = "";
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Henrizeu | Links</title>
+  <meta name="description" content="Henrizeu: todos os links oficiais num só lugar.">
+  <meta name="theme-color" content="#0B1B3A">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Henrizeu | Links">
+  <meta property="og:description" content="Todos os meus links num só lugar.">
+  <!-- Para a prévia aparecer ao compartilhar, descomente a linha abaixo e troque pelo
+       endereço COMPLETO do seu site (ex.: https://seuusuario.github.io/henrizeu/assets/og-image.png):
+  <meta property="og:image" content="https://SEU-ENDERECO/assets/og-image.png">
+  -->
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <style>
+    :root {
+      --navy: #0B1B3A;
+      --navy-2: #050D1F;
+      --yellow: #FFC400;
+      --white: #FFFFFF;
+      --muted: #B8C4DB;
+      --card: #0F2347;
+      --card-hover: #153061;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--white);
+      background: linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%) fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Camadas do fundo ---------- */
+    .bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .predio { fill: #0E2247; }
+    .janela { fill: var(--yellow); opacity: .3; }
+    .bolt {
+      fill: none;
+      stroke: var(--yellow);
+      stroke-width: 3;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      opacity: .5;
+      filter: drop-shadow(0 0 6px rgba(255, 196, 0, .7));
+    }
+
+    /* clarão do relâmpago */
+    .flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity .45s ease-out;
+      background: radial-gradient(ellipse at var(--fx, 50%) -10%,
+                  rgba(255, 226, 120, .5), rgba(255, 196, 0, .1) 45%, transparent 72%);
+    }
+    .flash.on { opacity: 1; transition: none; }
+
+    /* raios desenhados pelo script */
+    #raios {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ---------- Conteúdo ---------- */
+    .page {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 44px 20px 72px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 132px;
+      height: 132px;
+      border-radius: 30%;
+      display: block;
+      margin: 0 auto;
+      cursor: pointer;
+      box-shadow: 0 0 0 3px var(--yellow), 0 0 40px rgba(255, 196, 0, .32);
+      transition: filter .15s ease, transform .15s ease;
+    }
+    .logo.strike {
+      filter: brightness(1.25) drop-shadow(0 0 26px rgba(255, 214, 60, .95));
+      transform: scale(1.04);
+    }
+
+    h1 {
+      margin: 24px 0 8px;
+      font-family: "Arial Black", Impact, system-ui, sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-size: clamp(36px, 10vw, 52px);
+      line-height: 1;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+      text-shadow: 3px 3px 0 rgba(0, 0, 0, .45);
+      transition: text-shadow .15s ease;
+    }
+    h1 .zeu { color: var(--yellow); }
+    h1.strike {
+      text-shadow: 0 0 24px rgba(255, 214, 60, .95), 3px 3px 0 rgba(0, 0, 0, .45);
+    }
+
+    .tagline {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--yellow);
+      font-weight: 800;
+      font-size: .85rem;
+      letter-spacing: .42em;
+      text-transform: uppercase;
+    }
+    .tagline span { margin-right: -.42em; }
+    .tagline::before,
+    .tagline::after {
+      content: "";
+      width: 38px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--yellow));
+    }
+    .tagline::after { transform: scaleX(-1); }
+
+    .links {
+      list-style: none;
+      margin: 30px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .btn {
+      --accent: var(--yellow);
+      --on-accent: #fff;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-left: 6px solid var(--accent);
+      color: inherit;
+      text-decoration: none;
+      text-align: left;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+    /* brilho que passa quando o mouse está em cima */
+    .btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .2) 46%, transparent 62%);
+      transform: translateX(-130%);
+    }
+    .btn:hover {
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, .4), 0 0 0 1px rgba(255, 196, 0, .35);
+    }
+    .btn:hover::after {
+      transform: translateX(130%);
+      transition: transform .7s ease;
+    }
+    .btn:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    .chip {
+      flex: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: .95rem;
+      letter-spacing: .02em;
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+
+    .text { min-width: 0; }
+    .name { display: block; font-weight: 800; font-size: 1.08rem; }
+    .handle {
+      display: block;
+      color: var(--muted);
+      font-size: .92rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .arrow {
+      margin-left: auto;
+      flex: none;
+      font-size: 1.4rem;
+      color: var(--yellow);
+      transition: transform .15s ease;
+    }
+    .btn:hover .arrow { transform: translateX(4px); }
+
+    /* botão principal (Twitch) */
+    .btn.primary {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: var(--navy);
+    }
+    .btn.primary:hover { background: #ffd23d; }
+    .btn.primary .handle { color: rgba(11, 27, 58, .75); }
+    .btn.primary .arrow { color: var(--navy); }
+    .btn.primary .chip { box-shadow: 0 0 0 2px var(--navy); }
+
+    /* cores de cada rede */
+    .twitch    { --accent: #9146FF; }
+    .youtube   { --accent: #FF0000; }
+    .kick      { --accent: #53FC18; --on-accent: #0B1B3A; }
+    .instagram { --accent: #E1306C; }
+    .tiktok    { --accent: #FE2C55; }
+    .discord   { --accent: #5865F2; }
+
+    /* botão ainda sem link */
+    .btn.is-soon {
+      opacity: .6;
+      pointer-events: none;
+      cursor: default;
+    }
+    .soon-tag {
+      margin-left: auto;
+      flex: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 196, 0, .5);
+      color: var(--yellow);
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    footer {
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    /* ---------- Animações (só para quem não pediu menos movimento) ---------- */
+    @media (prefers-reduced-motion: no-preference) {
+      .bolt { display: none; }              /* os raios animados entram no lugar */
+
+      .logo { animation: brilho 3.4s ease-in-out infinite; }
+      @keyframes brilho {
+        0%, 100% { box-shadow: 0 0 0 3px var(--yellow), 0 0 34px rgba(255, 196, 0, .28); }
+        50%      { box-shadow: 0 0 0 3px var(--yellow), 0 0 58px rgba(255, 196, 0, .6); }
+      }
+
+      .links li {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: subir .6s cubic-bezier(.2, .8, .2, 1) forwards;
+        animation-delay: calc(var(--i, 0) * 90ms + 300ms);
+      }
+      @keyframes subir { to { opacity: 1; transform: none; } }
+
+      .btn.primary { animation: pulso 2.8s ease-in-out 1.4s infinite; }
+      @keyframes pulso {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(255, 196, 0, 0); }
+        50%      { box-shadow: 0 0 30px 2px rgba(255, 196, 0, .45); }
+      }
+
+      .janela { animation: piscar var(--d, 4s) ease-in-out infinite; }
+      @keyframes piscar {
+        0%, 100% { opacity: .08; }
+        50%      { opacity: .85; }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn, .btn::after, .arrow { transition: none; }
+      .btn:hover { transform: none; }
+      #raios, .flash { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fundo decorativo: prédios -->
+  <svg class="bg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+    <g id="predios" class="predio">
+      <rect x="0"    y="640" width="90"  height="160"/>
+      <rect x="100"  y="590" width="70"  height="210"/>
+      <rect x="180"  y="660" width="110" height="140"/>
+      <rect x="300"  y="560" width="80"  height="240"/>
+      <rect x="390"  y="620" width="120" height="180"/>
+      <rect x="520"  y="580" width="70"  height="220"/>
+      <rect x="600"  y="650" width="100" height="150"/>
+      <rect x="710"  y="570" width="90"  height="230"/>
+      <rect x="810"  y="630" width="120" height="170"/>
+      <rect x="940"  y="560" width="80"  height="240"/>
+      <rect x="1030" y="640" width="90"  height="160"/>
+      <rect x="1130" y="600" width="70"  height="200"/>
+    </g>
+    <g id="janelas"></g>
+    <!-- raios parados (só aparecem para quem prefere menos movimento) -->
+    <polyline class="bolt" points="150,0 120,90 160,150 110,250 150,320"/>
+    <polyline class="bolt" points="1060,0 1090,100 1040,170 1085,260 1050,340"/>
+  </svg>
+
+  <div class="flash" id="flash" aria-hidden="true"></div>
+  <canvas id="raios" aria-hidden="true"></canvas>
+
+  <main class="page">
+    <img class="logo" src="logo.png" width="132" height="132" alt="Logo do Henrizeu: a letra H com um raio" title="Toque para soltar um raio">
+
+    <h1>Henri<span class="zeu">zeu</span></h1>
+    <p class="tagline"><span>Links</span></p>
+
+    <!--
+      COMO EDITAR
+      - Discord: cole o link lá em cima, em LINK_DISCORD. Nada mais a fazer.
+      - Para trocar um endereço, mude o href do botão.
+      - Para esconder um botão, apague o bloco <li> dele.
+    -->
+    <ul class="links">
+      <li style="--i:0">
+        <a class="btn primary twitch" href="https://www.twitch.tv/henrizeu" target="_blank" rel="noopener noreferrer">
+          <span class="chip" aria-hidden="true">TW</span>
+          <span class="text">
+            <span class="name">Twitch</span>
+            <span class="handle">twitch.tv/henrizeu</span>
+          </span>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+
+      <li style="--i:1">
+        <a class="btn youtube" href="https://www.youtube.com/@henrizeu" target="_blank" rel="noopener noreferrer">
+          <span class="chip" aria-hidden="true">YT</span>
+          <span class="text">
+            <span class="name">YouTube</span>
+            <span class="handle">@henrizeu</span>
+          </span>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+
+      <li style="--i:2">
+        <a class="btn kick" href="https://kick.com/henrizeu" target="_blank" rel="noopener noreferrer">
+          <span class="chip" aria-hidden="true">KK</span>
+          <span class="text">
+            <span class="name">Kick</span>
+            <span class="handle">kick.com/henrizeu</span>
+          </span>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+
+      <li style="--i:3">
+        <a class="btn instagram" href="https://www.instagram.com/henrizeu/" target="_blank" rel="noopener noreferrer">
+          <span class="chip" aria-hidden="true">IG</span>
+          <span class="text">
+            <span class="name">Instagram</span>
+            <span class="handle">@henrizeu</span>
+          </span>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+
+      <!-- Atenção: no TikTok o usuário é henrizeu_ (com underline no final) -->
+      <li style="--i:4">
+        <a class="btn tiktok" href="https://www.tiktok.com/@henrizeu_" target="_blank" rel="noopener noreferrer">
+          <span class="chip" aria-hidden="true">TT</span>
+          <span class="text">
+            <span class="name">TikTok</span>
+            <span class="handle">@henrizeu_</span>
+          </span>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+
+      <!-- Discord: fica "Em breve" até você colar o link em LINK_DISCORD (no topo do arquivo). -->
+      <li style="--i:5">
+        <a class="btn discord is-soon" id="btn-discord" href="#" aria-disabled="true" tabindex="-1">
+          <span class="chip" aria-hidden="true">DC</span>
+          <span class="text">
+            <span class="name">Discord</span>
+            <span class="handle">Nossa comunidade</span>
+          </span>
+          <span class="soon-tag">Em breve</span>
+        </a>
+      </li>
+    </ul>
+
+    <footer>&copy; <span id="ano">2026</span> Henrizeu</footer>
+  </main>
+
+  <script>
+    /* Ano do rodapé */
+    document.getElementById('ano').textContent = new Date().getFullYear();
+
+    /* Discord: ativa o botão quando LINK_DISCORD tem um link */
+    (function () {
+      var btn = document.getElementById('btn-discord');
+      var link = (typeof LINK_DISCORD === 'string' ? LINK_DISCORD : '').trim();
+      if (!btn || !link) return;
+      if (!/^https?:\/\//i.test(link)) link = 'https://' + link;
+      try { link = new URL(link).href; } catch (e) { return; }
+      btn.href = link;
+      btn.target = '_blank';
+      btn.rel = 'noopener noreferrer';
+      btn.classList.remove('is-soon');
+      btn.removeAttribute('aria-disabled');
+      btn.removeAttribute('tabindex');
+      var tag = btn.querySelector('.soon-tag');
+      if (tag) tag.outerHTML = '<span class="arrow" aria-hidden="true">&rarr;</span>';
+    })();
+
+    /* Janelas acesas nos prédios */
+    (function () {
+      var NS = 'http://www.w3.org/2000/svg';
+      var alvo = document.getElementById('janelas');
+      if (!alvo) return;
+      var predios = document.querySelectorAll('#predios rect');
+      for (var i = 0; i < predios.length; i++) {
+        var r = predios[i];
+        var x = +r.getAttribute('x'), y = +r.getAttribute('y');
+        var w = +r.getAttribute('width'), h = +r.getAttribute('height');
+        for (var wy = y + 18; wy < y + h - 20; wy += 34) {
+          for (var wx = x + 12; wx < x + w - 18; wx += 28) {
+            if (Math.random() > 0.32) continue;
+            var j = document.createElementNS(NS, 'rect');
+            j.setAttribute('class', 'janela');
+            j.setAttribute('x', wx);
+            j.setAttribute('y', wy);
+            j.setAttribute('width', 8);
+            j.setAttribute('height', 12);
+            j.setAttribute('style', '--d:' + (3 + Math.random() * 4).toFixed(1) + 's;animation-delay:-' + (Math.random() * 6).toFixed(1) + 's');
+            alvo.appendChild(j);
+          }
+        }
+      }
+    })();
+
+    /* Raios animados */
+    (function () {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var cv = document.getElementById('raios');
+      if (!cv || !cv.getContext) return;
+      var ctx = cv.getContext('2d');
+      var flashEl = document.getElementById('flash');
+      var logo = document.querySelector('.logo');
+      var titulo = document.querySelector('h1');
+      var W = 0, H = 0, raios = [], rodando = false;
+
+      function rnd(a, b) { return a + Math.random() * (b - a); }
+
+      function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        cv.width = Math.round(W * dpr);
+        cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      /* quebra a reta em zigue-zague (deslocamento do ponto do meio) */
+      function deslocar(pts, desl, voltas) {
+        for (var i = 0; i < voltas; i++) {
+          var novo = [pts[0]];
+          for (var j = 0; j < pts.length - 1; j++) {
+            var p = pts[j], q = pts[j + 1];
+            var dx = q[0] - p[0], dy = q[1] - p[1];
+            var len = Math.sqrt(dx * dx + dy * dy) || 1;
+            var off = (Math.random() - 0.5) * desl;
+            novo.push([(p[0] + q[0]) / 2 - dy / len * off, (p[1] + q[1]) / 2 + dx / len * off]);
+            novo.push(q);
+          }
+          pts = novo;
+          desl *= 0.55;
+        }
+        return pts;
+      }
+
+      function criar(x0) {
+        var x1 = x0 + rnd(-160, 160);
+        var y1 = H * rnd(0.35, 0.75);
+        var comp = Math.sqrt((x1 - x0) * (x1 - x0) + y1 * y1);
+        var principal = deslocar([[x0, -10], [x1, y1]], comp * 0.35, 6);
+        var linhas = [{ pts: principal, w: 1 }];
+        var n = Math.floor(rnd(2, 5));
+        for (var k = 0; k < n; k++) {
+          var i = Math.floor(rnd(principal.length * 0.2, principal.length * 0.85));
+          var o = principal[i];
+          var ang = Math.PI / 2 + rnd(-1.0, 1.0);
+          var len = rnd(70, 190);
+          var fim = [o[0] + Math.cos(ang) * len, o[1] + Math.sin(ang) * len];
+          linhas.push({ pts: deslocar([o, fim], len * 0.4, 4), w: 0.5 });
+        }
+        return { linhas: linhas, nasc: performance.now(), vida: 750 };
+      }
+
+      /* intensidade ao longo da vida do raio: golpe, falha, segundo golpe, some */
+      function alfa(t) {
+        if (t < 0.10) return 1;
+        if (t < 0.20) return 0.25;
+        if (t < 0.32) return 0.9;
+        return Math.max(0, 0.9 * (1 - (t - 0.32) / 0.68));
+      }
+
+      function desenhar(agora) {
+        ctx.clearRect(0, 0, W, H);
+        raios = raios.filter(function (r) { return agora - r.nasc < r.vida; });
+        raios.forEach(function (r) {
+          var a = alfa((agora - r.nasc) / r.vida);
+          if (a <= 0) return;
+          r.linhas.forEach(function (l) {
+            ctx.beginPath();
+            ctx.moveTo(l.pts[0][0], l.pts[0][1]);
+            for (var i = 1; i < l.pts.length; i++) ctx.lineTo(l.pts[i][0], l.pts[i][1]);
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = 'rgba(255,196,0,' + (a * 0.28) + ')';
+            ctx.lineWidth = 14 * l.w;
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,214,70,' + (a * 0.7) + ')';
+            ctx.lineWidth = 4.5 * l.w;
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,235,' + a + ')';
+            ctx.lineWidth = 1.8 * l.w;
+            ctx.stroke();
+          });
+        });
+        if (raios.length) {
+          requestAnimationFrame(desenhar);
+        } else {
+          rodando = false;
+          ctx.clearRect(0, 0, W, H);
+        }
+      }
+
+      function clarao(x) {
+        if (flashEl) {
+          flashEl.style.setProperty('--fx', (x / W * 100) + '%');
+          flashEl.classList.add('on');
+          setTimeout(function () { flashEl.classList.remove('on'); }, 70);
+          setTimeout(function () { flashEl.classList.add('on'); }, 200);
+          setTimeout(function () { flashEl.classList.remove('on'); }, 260);
+        }
+        [logo, titulo].forEach(function (el) {
+          if (!el) return;
+          el.classList.add('strike');
+          setTimeout(function () { el.classList.remove('strike'); }, 380);
+        });
+      }
+
+      function golpe(x) {
+        if (typeof x !== 'number') {
+          x = W * (Math.random() < 0.5 ? rnd(0.04, 0.3) : rnd(0.7, 0.96));
+        }
+        raios.push(criar(x));
+        if (!rodando) {
+          rodando = true;
+          requestAnimationFrame(desenhar);
+        }
+        clarao(x);
+      }
+
+      function agendar(ms) {
+        setTimeout(function () {
+          if (!document.hidden) {
+            golpe();
+            if (Math.random() < 0.3) setTimeout(function () { golpe(); }, 160);
+          }
+          agendar(rnd(2600, 6200));
+        }, ms);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      if (logo) {
+        logo.addEventListener('click', function () {
+          var r = logo.getBoundingClientRect();
+          golpe(r.left + r.width / 2);
+        });
+      }
+      agendar(900);
+    })();
+  </script>
+</body>
+</html>
